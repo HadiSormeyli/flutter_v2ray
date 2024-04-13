@@ -14,7 +14,7 @@ class VmessURL extends V2RayURL {
     try {
       rawConfig = jsonDecode(utf8.decode(base64Decode(raw)));
     } catch (_) {
-      throw ArgumentError('url is invalid');
+      return;
     }
     var sni = super.populateTransportSettings(
       transport: rawConfig['net'],

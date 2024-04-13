@@ -7,7 +7,7 @@ class VlessURL extends V2RayURL {
     }
     final temp = Uri.tryParse(url);
     if (temp == null) {
-      throw ArgumentError('url is invalid');
+      return;
     }
     uri = temp;
     var sni = super.populateTransportSettings(

@@ -36,7 +36,7 @@ public class V2RayTestService extends Service {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            android.util.Log.d("MainViewModel", "onReceive: ping " + result);
+                            Long result = V2rayController.getV2rayServerDelay(config);
                             Map<String, Long> myMap = new HashMap<String,Long>();
                             myMap.put(config, result);
                             MessageUtil.sendMsg2UI(V2RayTestService.this, 2,  (Serializable) myMap);

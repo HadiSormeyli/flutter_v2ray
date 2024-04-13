@@ -2,14 +2,21 @@ import 'dart:convert';
 
 abstract class V2RayURL {
   V2RayURL({required this.url});
+
   final String url;
 
   bool get allowInsecure => true;
+
   String get security => "auto";
+
   int get level => 8;
+
   int get port => 443;
+
   String get network => "tcp";
+
   String get address => '';
+
   String get remark => '';
 
   Map<String, dynamic> inbound = {
@@ -98,6 +105,8 @@ abstract class V2RayURL {
 
   Map<String, dynamic> get fullConfiguration => {
         "log": log,
+        "remark": remark,
+        "url": url,
         "inbounds": [inbound],
         "outbounds": [outbound1, outbound2, outbound3],
         "dns": dns,
@@ -108,6 +117,25 @@ abstract class V2RayURL {
   ///
   /// indent: json encoder indent
   String getFullConfiguration({int indent = 2}) {
+    return JsonEncoder.withIndent(' ' * indent).convert(
+      removeNulls(
+        Map.from(fullConfiguration),
+      ),
+    );
+  }
+
+  Map<String, dynamic> get connectConfiguration => {
+        "log": log,
+        "inbounds": [inbound],
+        "outbounds": [outbound1, outbound2, outbound3],
+        "dns": dns,
+        "routing": routing,
+      };
+
+  /// Generate Full V2Ray Configuration
+  ///
+  /// indent: json encoder indent
+  String getConnectConfiguration({int indent = 2}) {
     return JsonEncoder.withIndent(' ' * indent).convert(
       removeNulls(
         Map.from(fullConfiguration),

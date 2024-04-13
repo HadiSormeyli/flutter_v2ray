@@ -93,12 +93,10 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
                 new EventChannel.StreamHandler() {
                     @Override
                     public void onListen(Object arguments, EventChannel.EventSink eventSink) {
-                        android.util.Log.d("MainViewModel", "onReceive: best2 ");
                         VpnAllRealPingBroadcastReceiver receiver = new VpnAllRealPingBroadcastReceiver();
                         receiver.setListener(new VpnAllRealPingListener() {
                             @Override
                             public void onVpnAllRealPingRequest(Map<String, Long> ping) {
-                                android.util.Log.d("MainViewModel", "onReceive: best3 " + ping);
                                 eventSink.success(new Gson().toJson(ping));
                             }
                         });

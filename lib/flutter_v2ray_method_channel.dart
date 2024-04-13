@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:ffi';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'model/v2ray_status.dart' show V2RayStatus;
@@ -10,10 +13,12 @@ class MethodChannelFlutterV2ray extends FlutterV2rayPlatform {
   @visibleForTesting
   final methodChannel = const MethodChannel('flutter_v2ray');
   final eventChannel = const EventChannel('flutter_v2ray/status');
+  final pingChannel = const EventChannel('flutter_v2ray/all_real_ping');
 
   @override
   Future<void> initializeV2Ray({
     required void Function(V2RayStatus status) onStatusChanged,
+    required void Function(Map<String, Long> ping) onPingRecived,
   }) async {
     eventChannel.receiveBroadcastStream().distinct().cast().listen((event) {
       if (event != null) {
@@ -25,6 +30,13 @@ class MethodChannelFlutterV2ray extends FlutterV2rayPlatform {
           download: event[4],
           state: event[5],
         ));
+      }
+    });
+
+    pingChannel.receiveBroadcastStream().distinct().cast().listen((event) {
+      if (event != null) {
+        Map<String, dynamic> myMap = jsonDecode(event);
+        onPingRecived.call(myMap.map((key, value) => MapEntry(key, value as Long)));
       }
     });
     await methodChannel.invokeMethod(

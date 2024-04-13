@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter_v2ray/model/v2ray_status.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
@@ -30,6 +32,7 @@ abstract class FlutterV2rayPlatform extends PlatformInterface {
 
   Future<void> initializeV2Ray({
     required void Function(V2RayStatus status) onStatusChanged,
+    required void Function(Map<String, Long> status) onPingRecived,
   }) {
     throw UnimplementedError('initializeV2Ray() has not been implemented.');
   }

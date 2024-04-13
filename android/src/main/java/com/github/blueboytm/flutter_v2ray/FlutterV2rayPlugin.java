@@ -22,25 +22,96 @@ import io.flutter.plugin.common.MethodChannel;
 
 import com.github.blueboytm.flutter_v2ray.v2ray.V2rayController;
 import com.github.blueboytm.flutter_v2ray.v2ray.utils.AppConfigs;
+import com.github.blueboytm.flutter_v2ray.v2ray.services.VpnAllRealPingBroadcastReceiver;
+import com.github.blueboytm.flutter_v2ray.v2ray.services.VpnAllRealPingListener;
+
+import com.github.blueboytm.flutter_v2ray.v2ray.utils.MessageUtil;
+import com.github.blueboytm.flutter_v2ray.v2ray.services.V2RayTestService;
+import com.google.gson.Gson;
+
 
 /**
  * FlutterV2rayPlugin
  */
 public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
 
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private MethodChannel vpnControlMethod;
     private EventChannel vpnStatusEvent;
+    private EventChannel vpnPingEvent;
     private EventChannel.EventSink vpnStatusSink;
     private Activity activity;
+    private final BroadcastReceiver mMsgReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context ctx, Intent intent) {
+            if (intent != null) {
+                switch (intent.getIntExtra("key", 0)) {
+                    case 2:
+                        Map<String, Long> result = (HashMap<String, Long>) intent.getSerializableExtra("content");
+
+
+                        Intent intent2 = new Intent();
+                        intent2.setAction("action.VPN_ALL_REAL_PING");
+                        intent2.putExtra("VPN_ALL_REAL_PING", (Serializable) result);
+
+                        activity.sendBroadcast(intent2);
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        }
+    };
     private BroadcastReceiver v2rayBroadCastReceiver;
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+
+    public void testAllRealPing(List<String> configs) {
+        MessageUtil.sendMsg2TestService(activity, 3, "");
+
+        for (String config : configs) {
+            MessageUtil.sendMsg2TestService(
+                    activity,
+                    1,
+                    config
+            );
+        }
+    }
 
     @SuppressLint("DiscouragedApi")
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {
         vpnControlMethod = new MethodChannel(binding.getBinaryMessenger(), "flutter_v2ray");
         vpnStatusEvent = new EventChannel(binding.getBinaryMessenger(), "flutter_v2ray/status");
-        
+        vpnPingEvent = new EventChannel(
+                binding.getBinaryMessenger(),
+                "flutter_v2ray/all_real_ping"
+        );
+
+        vpnPingEvent.setStreamHandler(
+                new EventChannel.StreamHandler() {
+                    @Override
+                    public void onListen(Object arguments, EventChannel.EventSink eventSink) {
+                        android.util.Log.d("MainViewModel", "onReceive: best2 ");
+                        VpnAllRealPingBroadcastReceiver receiver = new VpnAllRealPingBroadcastReceiver();
+                        receiver.setListener(new VpnAllRealPingListener() {
+                            @Override
+                            public void onVpnAllRealPingRequest(Map<String, Long> ping) {
+                                android.util.Log.d("MainViewModel", "onReceive: best3 " + ping);
+                                eventSink.success(new Gson().toJson(ping));
+                            }
+                        });
+
+                        IntentFilter filter = new IntentFilter("action.VPN_ALL_REAL_PING");
+                        activity.registerReceiver(receiver, filter);
+                    }
+
+                    @Override
+                    public void onCancel(Object arguments) {
+                        // Implementation for onCancel
+                    }
+                }
+        );
+
         vpnStatusEvent.setStreamHandler(new EventChannel.StreamHandler() {
             @Override
             public void onListen(Object arguments, EventChannel.EventSink events) {
@@ -55,10 +126,10 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
         vpnControlMethod.setMethodCallHandler((call, result) -> {
             switch (call.method) {
                 case "startV2Ray":
-                    if (Boolean.TRUE.equals(call.argument("proxy_only"))){
+                    if (Boolean.TRUE.equals(call.argument("proxy_only"))) {
                         V2rayController.changeConnectionMode(AppConfigs.V2RAY_CONNECTION_MODES.PROXY_ONLY);
-                    } 
-                    V2rayController.StartV2ray(binding.getApplicationContext(), call.argument("remark"),  call.argument("config"), call.argument("blocked_apps"), call.argument("bypass_subnets"));
+                    }
+                    V2rayController.StartV2ray(binding.getApplicationContext(), call.argument("remark"), call.argument("config"), call.argument("blocked_apps"), call.argument("bypass_subnets"));
                     result.success(null);
                     break;
                 case "stopV2Ray":
@@ -77,6 +148,12 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
                             result.success(-1);
                         }
                     });
+                    break;
+
+                case "getAllServerDelay":
+                    String res = call.argument("configs");
+                    List<String> configs = new Gson().fromJson(res, List.class);
+                    testAllRealPing(configs);
                     break;
                 case "getConnectedServerDelay":
                     executor.submit(() -> {
@@ -110,6 +187,7 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
         if (v2rayBroadCastReceiver != null) {
             vpnControlMethod.setMethodCallHandler(null);
             vpnStatusEvent.setStreamHandler(null);
+            vpnPingEvent.setStreamHandler(null);
             activity.unregisterReceiver(v2rayBroadCastReceiver);
             executor.shutdown();
         }
@@ -130,11 +208,13 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
                     list.add(intent.getExtras().getString("DOWNLOAD_TRAFFIC"));
                     list.add(intent.getExtras().getSerializable("STATE").toString().substring(6));
                     vpnStatusSink.success(list);
+                } catch (Exception ignored) {
                 }
-                catch(Exception ignored) {}
             }
         };
         activity.registerReceiver(v2rayBroadCastReceiver, new IntentFilter("V2RAY_CONNECTION_INFO"));
+        activity.registerReceiver(mMsgReceiver, new IntentFilter("com.v2ray.action.activity"));
+
     }
 
     @Override
@@ -148,7 +228,7 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
         v2rayBroadCastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-               try {
+                try {
                     ArrayList<String> list = new ArrayList<>();
                     list.add(intent.getExtras().getString("DURATION"));
                     list.add(intent.getExtras().getString("UPLOAD_SPEED"));
@@ -157,8 +237,8 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
                     list.add(intent.getExtras().getString("DOWNLOAD_TRAFFIC"));
                     list.add(intent.getExtras().getSerializable("STATE").toString().substring(6));
                     vpnStatusSink.success(list);
+                } catch (Exception ignored) {
                 }
-                catch(Exception ignored) {}
             }
         };
         activity.registerReceiver(v2rayBroadCastReceiver, new IntentFilter("V2RAY_CONNECTION_INFO"));

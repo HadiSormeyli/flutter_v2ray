@@ -30,9 +30,7 @@ import com.github.blueboytm.flutter_v2ray.v2ray.services.V2RayTestService;
 import com.google.gson.Gson;
 
 
-/**
- * FlutterV2rayPlugin
- */
+
 public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();

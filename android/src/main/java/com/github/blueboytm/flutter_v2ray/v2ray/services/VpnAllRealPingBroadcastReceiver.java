@@ -1,4 +1,4 @@
-package android.src.main.java.com.github.blueboytm.flutter_v2ray.v2ray.services;
+package com.github.blueboytm.flutter_v2ray.v2ray.services;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

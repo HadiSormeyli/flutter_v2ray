@@ -1,4 +1,4 @@
-package android.src.main.java.com.github.blueboytm.flutter_v2ray.v2ray.utils;
+package com.github.blueboytm.flutter_v2ray.v2ray.utils;
 
 import android.content.Context;
 import android.content.Intent;

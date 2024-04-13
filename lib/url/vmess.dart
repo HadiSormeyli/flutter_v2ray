@@ -27,19 +27,21 @@ class VmessURL extends V2RayURL {
       mode: rawConfig['type'],
       serviceName: rawConfig['path'],
     );
-    String? fingerprint = (rawConfig['fp'] != null && rawConfig['fp'] != '')
-        ? rawConfig['fp']
-        : streamSetting['tlsSettings']?['fingerprint'];
-    super.populateTlsSettings(
-      streamSecurity: rawConfig['tls'],
-      allowInsecure: allowInsecure,
-      sni: sni,
-      fingerprint: fingerprint,
-      alpns: rawConfig['alpn'],
-      publicKey: null,
-      shortId: null,
-      spiderX: null,
-    );
+    if(rawConfig['tls'] is String?) {
+      String? fingerprint = (rawConfig['fp'] != null && rawConfig['fp'] != '')
+          ? rawConfig['fp']
+          : streamSetting['tlsSettings']?['fingerprint'];
+      super.populateTlsSettings(
+        streamSecurity: rawConfig['tls'],
+        allowInsecure: allowInsecure,
+        sni: sni,
+        fingerprint: fingerprint,
+        alpns: rawConfig['alpn'],
+        publicKey: null,
+        shortId: null,
+        spiderX: null,
+      );
+    }
   }
   late final Map<String, dynamic> rawConfig;
 

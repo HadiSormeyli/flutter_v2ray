@@ -108,6 +108,11 @@ class FlutterV2ray {
     return await FlutterV2rayPlatform.instance.getServerDelay(config: config);
   }
 
+  /// This method returns the real server delay of the configuration.
+  Future<dynamic> getAllServerDelay({required List<String> configs}) async {
+    return FlutterV2rayPlatform.instance.getAllServerDelay(configs: configs);
+  }
+
   /// This method returns the connected server delay.
   Future<int> getConnectedServerDelay() async {
     return await FlutterV2rayPlatform.instance.getConnectedServerDelay();

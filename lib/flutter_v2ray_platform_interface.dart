@@ -55,6 +55,10 @@ abstract class FlutterV2rayPlatform extends PlatformInterface {
     throw UnimplementedError('getServerDelay() has not been implemented.');
   }
 
+  Future<dynamic> getAllServerDelay({required List<String> configs}) {
+    throw UnimplementedError('getServerDelay() has not been implemented.');
+  }
+
   Future<int> getConnectedServerDelay() async {
     throw UnimplementedError(
       'getConnectedServerDelay() has not been implemented.',

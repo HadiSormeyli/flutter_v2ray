@@ -74,6 +74,14 @@ class MethodChannelFlutterV2ray extends FlutterV2rayPlatform {
   }
 
   @override
+  Future<dynamic> getAllServerDelay({required List<String> configs}) {
+    final res = jsonEncode(configs);
+    return methodChannel.invokeMethod('getAllServerDelay', {
+      "configs": res,
+    });
+  }
+
+  @override
   Future<int> getConnectedServerDelay() async {
     return await methodChannel.invokeMethod('getConnectedServerDelay');
   }

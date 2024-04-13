@@ -20,7 +20,7 @@ class FlutterV2ray {
 
   /// This method is called when V2Ray status has changed.
   final void Function(V2RayStatus status) onStatusChanged;
-  final void Function(Map<String, Long> ping) onPingRecived;
+  final void Function(Map<String, int> ping) onPingRecived;
 
   /// Request VPN service permission specifically for Android.
   Future<bool> requestPermission() async {

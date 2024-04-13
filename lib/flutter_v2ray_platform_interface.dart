@@ -32,7 +32,7 @@ abstract class FlutterV2rayPlatform extends PlatformInterface {
 
   Future<void> initializeV2Ray({
     required void Function(V2RayStatus status) onStatusChanged,
-    required void Function(Map<String, Long> status) onPingRecived,
+    required void Function(Map<String, int> status) onPingRecived,
   }) {
     throw UnimplementedError('initializeV2Ray() has not been implemented.');
   }

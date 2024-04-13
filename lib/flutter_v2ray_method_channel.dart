@@ -18,7 +18,7 @@ class MethodChannelFlutterV2ray extends FlutterV2rayPlatform {
   @override
   Future<void> initializeV2Ray({
     required void Function(V2RayStatus status) onStatusChanged,
-    required void Function(Map<String, Long> ping) onPingRecived,
+    required void Function(Map<String, int> ping) onPingRecived,
   }) async {
     eventChannel.receiveBroadcastStream().distinct().cast().listen((event) {
       if (event != null) {
@@ -36,7 +36,7 @@ class MethodChannelFlutterV2ray extends FlutterV2rayPlatform {
     pingChannel.receiveBroadcastStream().distinct().cast().listen((event) {
       if (event != null) {
         Map<String, dynamic> myMap = jsonDecode(event);
-        onPingRecived.call(myMap.map((key, value) => MapEntry(key, value as Long)));
+        onPingRecived.call(myMap.map((key, value) => MapEntry(key, value as int)));
       }
     });
     await methodChannel.invokeMethod(

@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.io.Serializable;
 import java.util.List;
+
 import com.github.blueboytm.flutter_v2ray.v2ray.V2rayController;
 import com.github.blueboytm.flutter_v2ray.v2ray.utils.AppConfigs;
 import com.github.blueboytm.flutter_v2ray.v2ray.services.VpnAllRealPingBroadcastReceiver;
@@ -32,7 +33,6 @@ import com.github.blueboytm.flutter_v2ray.v2ray.services.VpnAllRealPingListener;
 import com.github.blueboytm.flutter_v2ray.v2ray.utils.MessageUtil;
 import com.github.blueboytm.flutter_v2ray.v2ray.services.V2RayTestService;
 import com.google.gson.Gson;
-
 
 
 public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
@@ -55,16 +55,13 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
                             Long value = entry.getValue();
 
 
-                            if(!value.equals(-1L)) {
-                                Intent intent2 = new Intent();
-                                intent2.setAction("action.VPN_ALL_REAL_PING");
-                                intent2.putExtra("VPN_ALL_REAL_PING", (Serializable) result);
+                            Intent intent2 = new Intent();
+                            intent2.setAction("action.VPN_ALL_REAL_PING");
+                            intent2.putExtra("VPN_ALL_REAL_PING", (Serializable) result);
 
-                                activity.sendBroadcast(intent2);
-                            }
+                            activity.sendBroadcast(intent2);
                             break;
                         }
-
 
 
                         break;

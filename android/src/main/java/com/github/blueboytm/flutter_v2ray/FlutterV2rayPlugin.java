@@ -51,12 +51,22 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
                     case 2:
                         Map<String, Long> result = (HashMap<String, Long>) intent.getSerializableExtra("content");
 
+                        for (Map.Entry<String, Long> entry : result.entrySet()) {
+                            Long value = entry.getValue();
 
-                        Intent intent2 = new Intent();
-                        intent2.setAction("action.VPN_ALL_REAL_PING");
-                        intent2.putExtra("VPN_ALL_REAL_PING", (Serializable) result);
 
-                        activity.sendBroadcast(intent2);
+                            if(value.equals(-1L)) {
+                                Intent intent2 = new Intent();
+                                intent2.setAction("action.VPN_ALL_REAL_PING");
+                                intent2.putExtra("VPN_ALL_REAL_PING", (Serializable) result);
+
+                                activity.sendBroadcast(intent2);
+                            }
+                            break;
+                        }
+
+
+
                         break;
 
                     default:

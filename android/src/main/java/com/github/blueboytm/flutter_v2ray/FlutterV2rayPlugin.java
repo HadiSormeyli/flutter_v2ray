@@ -55,7 +55,7 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
                             Long value = entry.getValue();
 
 
-                            if(value.equals(-1L)) {
+                            if(!value.equals(-1L)) {
                                 Intent intent2 = new Intent();
                                 intent2.setAction("action.VPN_ALL_REAL_PING");
                                 intent2.putExtra("VPN_ALL_REAL_PING", (Serializable) result);

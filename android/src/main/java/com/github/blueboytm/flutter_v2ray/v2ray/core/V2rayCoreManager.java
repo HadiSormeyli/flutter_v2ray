@@ -324,10 +324,10 @@ public final class V2rayCoreManager {
                 new_routing_json.remove("rules");
                 config_json.remove("routing");
                 config_json.put("routing", new_routing_json);
-                return Libv2ray.measureOutboundDelay(config_json.toString());
+                return Libv2ray.measureOutboundDelay(config_json.toString(), "");
             } catch (Exception json_error) {
                 Log.e("getV2rayServerDelay", json_error.toString());
-                return Libv2ray.measureOutboundDelay(config);
+                return Libv2ray.measureOutboundDelay(config, "");
             }
         } catch (Exception e) {
             Log.e("getV2rayServerDelayCore", e.toString());

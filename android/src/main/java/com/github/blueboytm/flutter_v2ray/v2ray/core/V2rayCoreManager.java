@@ -324,7 +324,8 @@ public final class V2rayCoreManager {
                 new_routing_json.remove("rules");
                 config_json.remove("routing");
                 config_json.put("routing", new_routing_json);
-                return Libv2ray.measureOutboundDelay(config_json.toString(), "");
+                Long ping = Libv2ray.measureOutboundDelay(config_json.toString(), "");
+                return ping;
             } catch (Exception json_error) {
                 Log.e("getV2rayServerDelay", json_error.toString());
                 return Libv2ray.measureOutboundDelay(config, "");

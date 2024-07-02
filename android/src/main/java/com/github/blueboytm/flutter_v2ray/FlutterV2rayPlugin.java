@@ -56,8 +56,6 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
                         intent2.putExtra("VPN_ALL_REAL_PING", (Serializable) result);
 
                         activity.sendBroadcast(intent2);
-
-
                         break;
 
                     default:

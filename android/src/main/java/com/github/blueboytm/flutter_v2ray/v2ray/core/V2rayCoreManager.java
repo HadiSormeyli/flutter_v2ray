@@ -36,7 +36,7 @@ public final class V2rayCoreManager {
     public AppConfigs.V2RAY_STATES V2RAY_STATE = AppConfigs.V2RAY_STATES.V2RAY_DISCONNECTED;
     private CountDownTimer countDownTimer;
     private int seconds, minutes, hours;
-    private long totalDownload, totalUpload, uploadSpeed, downloadSpeed;
+    public long totalDownload, totalUpload, uploadSpeed, downloadSpeed;
     private String SERVICE_DURATION = "00:00:00";
 
     private V2rayCoreManager() {}

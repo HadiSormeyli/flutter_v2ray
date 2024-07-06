@@ -28,6 +28,7 @@ import android.app.Service;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import android.os.Handler;
 import android.os.Looper;
 
@@ -88,11 +89,13 @@ public class V2rayVPNService extends VpnService implements V2rayServicesListener
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             notificationChannelID = createNotificationChannelID(v2rayConfig.APPLICATION_NAME);
         }
+        Long delay = V2rayCoreManager.getInstance().getConnectedV2rayServerDelay();
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(v2rayServicesListener.getService(), notificationChannelID);
         mBuilder.setSmallIcon(v2rayConfig.APPLICATION_ICON)
                 .setContentTitle(v2rayConfig.REMARK)
+                .setContentText(Utilities.parseTraffic(V2rayCoreManager.getInstance().uploadSpeed, false, true) + "↑ " + Utilities.parseTraffic(V2rayCoreManager.getInstance().downloadSpeed, false, true) + "↓")
                 .setContentIntent(notificationContentPendingIntent)
                 .addAction(-1, "Stop", stopPendingIntent);
         startForeground(1, mBuilder.build());
@@ -117,7 +120,6 @@ public class V2rayVPNService extends VpnService implements V2rayServicesListener
                 V2rayCoreManager.getInstance().stopCore();
             }
             if (V2rayCoreManager.getInstance().startCore(v2rayConfig)) {
-                showNotification();
                 updateRunnable = new Runnable() {
                     @Override
                     public void run() {

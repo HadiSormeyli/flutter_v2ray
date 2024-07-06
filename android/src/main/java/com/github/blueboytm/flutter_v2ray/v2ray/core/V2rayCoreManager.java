@@ -24,6 +24,7 @@ import com.github.blueboytm.flutter_v2ray.v2ray.interfaces.V2rayServicesListener
 import com.github.blueboytm.flutter_v2ray.v2ray.utils.AppConfigs;
 import com.github.blueboytm.flutter_v2ray.v2ray.utils.Utilities;
 import com.github.blueboytm.flutter_v2ray.v2ray.utils.V2rayConfig;
+import com.github.blueboytm.flutter_v2ray.v2ray.services.StopServiceReceiver;
 import libv2ray.Libv2ray;
 import libv2ray.V2RayPoint;
 import libv2ray.V2RayVPNServiceSupportsSet;
@@ -288,8 +289,7 @@ public final class V2rayCoreManager {
         PendingIntent notificationContentPendingIntent = PendingIntent.getActivity(
                 v2rayServicesListener.getService(), 0, launchIntent, judgeForNotificationFlag());
 
-        Intent stopIntent = v2rayServicesListener.getService().getPackageManager().
-                getLaunchIntentForPackage(v2rayServicesListener.getService().getApplicationInfo().packageName);
+        Intent stopIntent = new Intent(v2rayServicesListener.getService(), StopServiceReceiver.class);
         PendingIntent stopPendingIntent = PendingIntent.getBroadcast(
                 v2rayServicesListener.getService(), 0, stopIntent, judgeForNotificationFlag());
 

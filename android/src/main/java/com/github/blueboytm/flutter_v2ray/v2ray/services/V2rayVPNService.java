@@ -65,7 +65,8 @@ public class V2rayVPNService extends VpnService implements V2rayServicesListener
         NotificationChannel notificationChannel = new NotificationChannel(
                 notification_channel_id, Application_name + " Background Service", NotificationManager.IMPORTANCE_DEFAULT);
         notificationChannel.setLightColor(Color.BLUE);
-        notificationChannel.setImportance(NotificationManager.IMPORTANCE_DEFAULT);
+        notificationChannel.setImportance(NotificationManager.IMPORTANCE_LOW);
+        notificationChannel.setSound(null, null);
         Objects.requireNonNull(getNotificationManager()).createNotificationChannel(notificationChannel);
         return notification_channel_id;
     }
@@ -122,8 +123,8 @@ public class V2rayVPNService extends VpnService implements V2rayServicesListener
         updateNotificationRunnable = new Runnable() {
             @Override
             public void run() {
-                updateNotification();
                 handler.postDelayed(this, 1000);
+                updateNotification();
             }
         };
         handler.post(updateNotificationRunnable);

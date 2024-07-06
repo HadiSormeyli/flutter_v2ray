@@ -83,12 +83,12 @@ public class V2rayVPNService extends VpnService implements V2rayServicesListener
         launchIntent.setAction("FROM_DISCONNECT_BTN");
         launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent notificationContentPendingIntent = PendingIntent.getActivity(
-                v2rayServicesListener.getService(), 0, launchIntent, judgeForNotificationFlag());
+                this, 0, launchIntent, judgeForNotificationFlag());
 
-        Intent stopIntent = new Intent(v2rayServicesListener.getService(), V2rayVPNService.class);
+        Intent stopIntent = new Intent(this, V2rayVPNService.class);
         stopIntent.putExtra("COMMAND", AppConfigs.V2RAY_SERVICE_COMMANDS.STOP_SERVICE);
         PendingIntent stopPendingIntent = PendingIntent.getService(
-                v2rayServicesListener.getService(), 1, stopIntent, judgeForNotificationFlag());
+                this, 1, stopIntent, judgeForNotificationFlag());
 
         String notificationChannelID = "";
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {

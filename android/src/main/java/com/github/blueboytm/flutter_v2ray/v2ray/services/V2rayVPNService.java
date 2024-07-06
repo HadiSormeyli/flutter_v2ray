@@ -44,7 +44,9 @@ public class V2rayVPNService extends VpnService implements V2rayServicesListener
     private V2rayConfig v2rayConfig;
     private boolean isRunning = true;
     private NotificationManager mNotificationManager = null;
-
+    private NotificationCompat.Builder mBuilder;
+    private Handler handler = new Handler(Looper.getMainLooper());
+    private Runnable updateNotificationRunnable;
 
     private NotificationManager getNotificationManager() {
         if (mNotificationManager == null) {
@@ -94,14 +96,41 @@ public class V2rayVPNService extends VpnService implements V2rayServicesListener
             notificationChannelID = createNotificationChannelID(v2rayConfig.APPLICATION_NAME);
         }
 
-        NotificationCompat.Builder mBuilder =
+         mBuilder =
                 new NotificationCompat.Builder(this, notificationChannelID);
         mBuilder.setSmallIcon(v2rayConfig.APPLICATION_ICON)
                 .setContentTitle(v2rayConfig.REMARK)
-                .setContentText("awdawd")
                 .setContentIntent(notificationContentPendingIntent)
                 .addAction(-1, "Stop", stopPendingIntent);
         startForeground(1, mBuilder.build());
+        startUpdatingNotification();
+    }
+
+    private String getNotificationContentText() {
+        return Utilities.parseTraffic(V2rayCoreManager.getInstance().uploadSpeed, false, true) + " " +
+                Utilities.parseTraffic(V2rayCoreManager.getInstance().downloadSpeed, false, true) + "";
+    }
+
+    private void updateNotification() {
+        if(mBuilder != null) {
+            mBuilder.setContentText(getNotificationContentText());
+            getNotificationManager().notify(1, mBuilder.build());
+        }
+    }
+
+    private void startUpdatingNotification() {
+        updateNotificationRunnable = new Runnable() {
+            @Override
+            public void run() {
+                updateNotification();
+                handler.postDelayed(this, 1000);
+            }
+        };
+        handler.post(updateNotificationRunnable);
+    }
+
+    private void stopUpdatingNotification() {
+        handler.removeCallbacks(updateNotificationRunnable);
     }
 
 
@@ -143,6 +172,7 @@ public class V2rayVPNService extends VpnService implements V2rayServicesListener
     }
 
     private void stopAllProcess() {
+        stopUpdatingNotification();
         stopForeground(true);
         isRunning = false;
         if (process != null) {

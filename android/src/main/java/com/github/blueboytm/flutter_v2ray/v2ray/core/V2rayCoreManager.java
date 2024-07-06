@@ -288,7 +288,8 @@ public final class V2rayCoreManager {
         PendingIntent notificationContentPendingIntent = PendingIntent.getActivity(
                 v2rayServicesListener.getService(), 0, launchIntent, judgeForNotificationFlag());
 
-        Intent stopIntent = new Intent(v2rayServicesListener.getService(), StopServiceReceiver.class);
+        Intent stopIntent = v2rayServicesListener.getService().getPackageManager().
+                getLaunchIntentForPackage(v2rayServicesListener.getService().getApplicationInfo().packageName);
         PendingIntent stopPendingIntent = PendingIntent.getBroadcast(
                 v2rayServicesListener.getService(), 0, stopIntent, judgeForNotificationFlag());
 

@@ -8,12 +8,14 @@ import android.net.VpnService;
 import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
+import androidx.annotation.RequiresApi;
 
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import android.content.Context;
 
 import com.github.blueboytm.flutter_v2ray.v2ray.core.V2rayCoreManager;
 import com.github.blueboytm.flutter_v2ray.v2ray.interfaces.V2rayServicesListener;
@@ -24,13 +26,17 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.graphics.Color;
+import java.util.Objects;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import androidx.core.app.NotificationCompat;
 
 import android.os.Handler;
 import android.os.Looper;
+import com.github.blueboytm.flutter_v2ray.v2ray.utils.Utilities;
 
 public class V2rayVPNService extends VpnService implements V2rayServicesListener {
     private ParcelFileDescriptor mInterface;
@@ -72,8 +78,8 @@ public class V2rayVPNService extends VpnService implements V2rayServicesListener
     }
 
     private void showNotification() {
-        Intent launchIntent = v2rayServicesListener.getService().getPackageManager().
-                getLaunchIntentForPackage(v2rayServicesListener.getService().getApplicationInfo().packageName);
+        Intent launchIntent = getPackageManager().
+                getLaunchIntentForPackage(getApplicationInfo().packageName);
         launchIntent.setAction("FROM_DISCONNECT_BTN");
         launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent notificationContentPendingIntent = PendingIntent.getActivity(
@@ -84,15 +90,13 @@ public class V2rayVPNService extends VpnService implements V2rayServicesListener
         PendingIntent stopPendingIntent = PendingIntent.getService(
                 v2rayServicesListener.getService(), 1, stopIntent, judgeForNotificationFlag());
 
-
         String notificationChannelID = "";
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             notificationChannelID = createNotificationChannelID(v2rayConfig.APPLICATION_NAME);
         }
-        Long delay = V2rayCoreManager.getInstance().getConnectedV2rayServerDelay();
 
         NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(v2rayServicesListener.getService(), notificationChannelID);
+                new NotificationCompat.Builder(this, notificationChannelID);
         mBuilder.setSmallIcon(v2rayConfig.APPLICATION_ICON)
                 .setContentTitle(v2rayConfig.REMARK)
                 .setContentText(Utilities.parseTraffic(V2rayCoreManager.getInstance().uploadSpeed, false, true) + "↑ " + Utilities.parseTraffic(V2rayCoreManager.getInstance().downloadSpeed, false, true) + "↓")

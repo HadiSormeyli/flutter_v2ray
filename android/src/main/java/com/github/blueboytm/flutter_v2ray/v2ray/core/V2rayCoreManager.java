@@ -38,6 +38,7 @@ public final class V2rayCoreManager {
     private int seconds, minutes, hours;
     public long totalDownload, totalUpload, uploadSpeed, downloadSpeed;
     private String SERVICE_DURATION = "00:00:00";
+    private NotificationManager mNotificationManager = null;
 
     private V2rayCoreManager() {}
 

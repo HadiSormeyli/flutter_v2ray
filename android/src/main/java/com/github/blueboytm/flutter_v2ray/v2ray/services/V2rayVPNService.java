@@ -43,6 +43,7 @@ public class V2rayVPNService extends VpnService implements V2rayServicesListener
     private Process process;
     private V2rayConfig v2rayConfig;
     private boolean isRunning = true;
+
     private NotificationManager mNotificationManager = null;
     private NotificationCompat.Builder mBuilder;
     private Handler handler = new Handler(Looper.getMainLooper());

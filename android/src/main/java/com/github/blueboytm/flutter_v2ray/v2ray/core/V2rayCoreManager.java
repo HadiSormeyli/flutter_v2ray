@@ -287,6 +287,12 @@ public final class V2rayCoreManager {
         launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent notificationContentPendingIntent = PendingIntent.getActivity(
                 v2rayServicesListener.getService(), 0, launchIntent, judgeForNotificationFlag());
+
+        Intent stopIntent = new Intent(v2rayServicesListener.getService(), StopServiceReceiver.class);
+        PendingIntent stopPendingIntent = PendingIntent.getBroadcast(
+                v2rayServicesListener.getService(), 0, stopIntent, judgeForNotificationFlag());
+
+
         String notificationChannelID = "";
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             notificationChannelID = createNotificationChannelID(v2rayConfig.APPLICATION_NAME);
@@ -297,7 +303,13 @@ public final class V2rayCoreManager {
         mBuilder.setSmallIcon(v2rayConfig.APPLICATION_ICON)
                 .setContentTitle(v2rayConfig.REMARK)
                 .setContentText("tap to open application")
-                .setContentIntent(notificationContentPendingIntent);
+                .setContentIntent(notificationContentPendingIntent)
+                .addAction(new NotificationCompat.Action(
+                        -1,  // icon for the stop button
+                        "Stop",  // text for the stop button
+                        stopPendingIntent  // pending intent for the stop action
+                ));
+        ;
         v2rayServicesListener.getService().startForeground(1, mBuilder.build());
     }
 

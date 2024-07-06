@@ -108,8 +108,8 @@ public class V2rayVPNService extends VpnService implements V2rayServicesListener
     }
 
     private String getNotificationContentText() {
-        return Utilities.parseTraffic(V2rayCoreManager.getInstance().uploadSpeed, false, true) + " " +
-                Utilities.parseTraffic(V2rayCoreManager.getInstance().downloadSpeed, false, true) + "";
+        return Utilities.parseTraffic(V2rayCoreManager.getInstance().uploadSpeed, false, true) + "↑ " +
+                Utilities.parseTraffic(V2rayCoreManager.getInstance().downloadSpeed, false, true) + "↓";
     }
 
     private void updateNotification() {
@@ -123,8 +123,8 @@ public class V2rayVPNService extends VpnService implements V2rayServicesListener
         updateNotificationRunnable = new Runnable() {
             @Override
             public void run() {
-                handler.postDelayed(this, 1000);
                 updateNotification();
+                handler.postDelayed(this, 500);
             }
         };
         handler.post(updateNotificationRunnable);

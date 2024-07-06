@@ -44,8 +44,7 @@ public class V2rayVPNService extends VpnService implements V2rayServicesListener
     private V2rayConfig v2rayConfig;
     private boolean isRunning = true;
     private NotificationManager mNotificationManager = null;
-    private Handler handler = new Handler(Looper.getMainLooper());
-    private Runnable updateNotificationRunnable;
+
 
     private NotificationManager getNotificationManager() {
         if (mNotificationManager == null) {
@@ -99,53 +98,17 @@ public class V2rayVPNService extends VpnService implements V2rayServicesListener
                 new NotificationCompat.Builder(this, notificationChannelID);
         mBuilder.setSmallIcon(v2rayConfig.APPLICATION_ICON)
                 .setContentTitle(v2rayConfig.REMARK)
-                .setContentText(getNotificationContentText())
+                .setContentText("awdawd")
                 .setContentIntent(notificationContentPendingIntent)
                 .addAction(-1, "Stop", stopPendingIntent);
         startForeground(1, mBuilder.build());
     }
 
-    private String getNotificationContentText() {
-        return Utilities.parseTraffic(V2rayCoreManager.getInstance().uploadSpeed, false, true) + "↑ " +
-                Utilities.parseTraffic(V2rayCoreManager.getInstance().downloadSpeed, false, true) + "↓";
-    }
-
-    private void startUpdatingNotification() {
-        updateNotificationRunnable = new Runnable() {
-            @Override
-            public void run() {
-                updateNotification();
-                handler.postDelayed(this, 3000);
-            }
-        };
-        handler.post(updateNotificationRunnable);
-    }
-
-    private void stopUpdatingNotification() {
-        handler.removeCallbacks(updateNotificationRunnable);
-    }
-
-    private void updateNotification() {
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this, Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O ? createNotificationChannelID(v2rayConfig.APPLICATION_NAME) : "");
-        mBuilder.setSmallIcon(v2rayConfig.APPLICATION_ICON)
-                .setContentTitle(v2rayConfig.REMARK)
-                .setContentText(getNotificationContentText())
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-        getNotificationManager().notify(1, mBuilder.build());
-    }
 
     @Override
     public void onCreate() {
         super.onCreate();
         V2rayCoreManager.getInstance().setUpListener(this);
-        startUpdatingNotification();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        stopUpdatingNotification();
     }
 
     @Override
@@ -160,6 +123,7 @@ public class V2rayVPNService extends VpnService implements V2rayServicesListener
                 V2rayCoreManager.getInstance().stopCore();
             }
             if (V2rayCoreManager.getInstance().startCore(v2rayConfig)) {
+                showNotification();
                 Log.e(V2rayProxyOnlyService.class.getSimpleName(), "onStartCommand success => v2ray core started.");
             } else {
                 this.onDestroy();
@@ -319,6 +283,12 @@ public class V2rayVPNService extends VpnService implements V2rayServicesListener
                 }
             }
         }, "sendFd_Thread").start();
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     @Override

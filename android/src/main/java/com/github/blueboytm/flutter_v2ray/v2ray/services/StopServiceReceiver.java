@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import com.github.blueboytm.flutter_v2ray.v2ray.core.V2rayCoreManager;
+
 
 public class StopServiceReceiver extends BroadcastReceiver {
     @Override

@@ -20,15 +20,84 @@ import com.github.blueboytm.flutter_v2ray.v2ray.interfaces.V2rayServicesListener
 import com.github.blueboytm.flutter_v2ray.v2ray.utils.AppConfigs;
 import com.github.blueboytm.flutter_v2ray.v2ray.utils.V2rayConfig;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.Service;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import android.os.Handler;
+import android.os.Looper;
 
 public class V2rayVPNService extends VpnService implements V2rayServicesListener {
     private ParcelFileDescriptor mInterface;
     private Process process;
     private V2rayConfig v2rayConfig;
     private boolean isRunning = true;
+    private NotificationManager mNotificationManager = null;
+    private Handler handler = new Handler(Looper.getMainLooper());
+    private Runnable updateRunnable;
+
+    private NotificationManager getNotificationManager() {
+        if (mNotificationManager == null) {
+            try {
+                mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            } catch (Exception e) {
+                return null;
+            }
+        }
+        return mNotificationManager;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private String createNotificationChannelID(final String Application_name) {
+        String notification_channel_id = "DEV7_DEV_V_E_CH_ID";
+        NotificationChannel notificationChannel = new NotificationChannel(
+                notification_channel_id, Application_name + " Background Service", NotificationManager.IMPORTANCE_DEFAULT);
+        notificationChannel.setLightColor(Color.BLUE);
+        notificationChannel.setImportance(NotificationManager.IMPORTANCE_DEFAULT);
+        Objects.requireNonNull(getNotificationManager()).createNotificationChannel(notificationChannel);
+        return notification_channel_id;
+    }
+
+    private int judgeForNotificationFlag() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT;
+        } else {
+            return PendingIntent.FLAG_UPDATE_CURRENT;
+        }
+    }
+
+    private void showNotification() {
+        Intent launchIntent = v2rayServicesListener.getService().getPackageManager().
+                getLaunchIntentForPackage(v2rayServicesListener.getService().getApplicationInfo().packageName);
+        launchIntent.setAction("FROM_DISCONNECT_BTN");
+        launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent notificationContentPendingIntent = PendingIntent.getActivity(
+                v2rayServicesListener.getService(), 0, launchIntent, judgeForNotificationFlag());
+
+        Intent stopIntent = new Intent(v2rayServicesListener.getService(), V2rayVPNService.class);
+        stopIntent.putExtra("COMMAND", AppConfigs.V2RAY_SERVICE_COMMANDS.STOP_SERVICE);
+        PendingIntent stopPendingIntent = PendingIntent.getService(
+                v2rayServicesListener.getService(), 1, stopIntent, judgeForNotificationFlag());
+
+
+        String notificationChannelID = "";
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            notificationChannelID = createNotificationChannelID(v2rayConfig.APPLICATION_NAME);
+        }
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(v2rayServicesListener.getService(), notificationChannelID);
+        mBuilder.setSmallIcon(v2rayConfig.APPLICATION_ICON)
+                .setContentTitle(v2rayConfig.REMARK)
+                .setContentIntent(notificationContentPendingIntent)
+                .addAction(-1, "Stop", stopPendingIntent);
+        startForeground(1, mBuilder.build());
+    }
+
 
     @Override
     public void onCreate() {
@@ -48,6 +117,16 @@ public class V2rayVPNService extends VpnService implements V2rayServicesListener
                 V2rayCoreManager.getInstance().stopCore();
             }
             if (V2rayCoreManager.getInstance().startCore(v2rayConfig)) {
+                showNotification();
+                updateRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        showNotification();
+                        handler.postDelayed(this, 3000); // Update every 5 seconds
+                    }
+                };
+
+                handler.post(updateRunnable);
                 Log.e(V2rayProxyOnlyService.class.getSimpleName(), "onStartCommand success => v2ray core started.");
             } else {
                 this.onDestroy();
@@ -68,6 +147,7 @@ public class V2rayVPNService extends VpnService implements V2rayServicesListener
 
     private void stopAllProcess() {
         stopForeground(true);
+        handler.removeCallbacks(updateRunnable);
         isRunning = false;
         if (process != null) {
             process.destroy();
@@ -99,7 +179,7 @@ public class V2rayVPNService extends VpnService implements V2rayServicesListener
 
         if (v2rayConfig.BYPASS_SUBNETS == null || v2rayConfig.BYPASS_SUBNETS.size() <= 0) {
             builder.addRoute("0.0.0.0", 0);
-        }else {
+        } else {
             for (String subnet : v2rayConfig.BYPASS_SUBNETS) {
                 String[] parts = subnet.split("/");
                 if (parts.length == 2) {

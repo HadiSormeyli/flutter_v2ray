@@ -12,20 +12,27 @@ import com.github.blueboytm.flutter_v2ray.v2ray.interfaces.V2rayServicesListener
 import com.github.blueboytm.flutter_v2ray.v2ray.utils.AppConfigs;
 import com.github.blueboytm.flutter_v2ray.v2ray.utils.V2rayConfig;
 
+import androidx.annotation.RequiresApi;
+
+import android.os.Build;
+import android.content.Context;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.graphics.Color;
+
 import java.util.Objects;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import androidx.core.app.NotificationCompat;
 
 import android.os.Handler;
 import android.os.Looper;
+
 import com.github.blueboytm.flutter_v2ray.v2ray.utils.Utilities;
 
 public class V2rayProxyOnlyService extends Service implements V2rayServicesListener {
@@ -42,7 +49,6 @@ public class V2rayProxyOnlyService extends Service implements V2rayServicesListe
         super.onCreate();
         V2rayCoreManager.getInstance().setUpListener(this);
     }
-
 
 
     private NotificationManager getNotificationManager() {
@@ -110,7 +116,7 @@ public class V2rayProxyOnlyService extends Service implements V2rayServicesListe
     }
 
     private void updateNotification() {
-        if(mBuilder != null) {
+        if (mBuilder != null) {
             mBuilder.setContentText(getNotificationContentText());
             getNotificationManager().notify(1, mBuilder.build());
         }
@@ -130,9 +136,6 @@ public class V2rayProxyOnlyService extends Service implements V2rayServicesListe
     private void stopUpdatingNotification() {
         handler.removeCallbacks(updateNotificationRunnable);
     }
-
-
-
 
 
     @Override

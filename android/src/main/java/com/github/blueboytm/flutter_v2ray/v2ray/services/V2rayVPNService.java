@@ -1,6 +1,5 @@
 package com.github.blueboytm.flutter_v2ray.v2ray.services;
 
-import android.app.ServiceInfo;
 import android.app.Service;
 import android.content.Intent;
 import android.net.LocalSocket;
@@ -111,11 +110,7 @@ public class V2rayVPNService extends VpnService implements V2rayServicesListener
                 .setPriority(NotificationCompat.PRIORITY_LOW);
 
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            startForeground(1, mBuilder.build(), ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC);
-        } else {
-            startForeground(1, mBuilder.build());
-        }
+        startForeground(1, mBuilder.build());
 
         startUpdatingNotification();
     }

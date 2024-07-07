@@ -81,8 +81,7 @@ public class V2rayVPNService extends VpnService implements V2rayServicesListener
     }
 
     private void showNotification() {
-        Intent launchIntent = getPackageManager().
-                getLaunchIntentForPackage(getApplicationInfo().packageName);
+        Intent launchIntent = getPackageManager().getLaunchIntentForPackage(getApplicationInfo().packageName);
         launchIntent.setAction("FROM_DISCONNECT_BTN");
         launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent notificationContentPendingIntent = PendingIntent.getActivity(
@@ -98,16 +97,17 @@ public class V2rayVPNService extends VpnService implements V2rayServicesListener
             notificationChannelID = createNotificationChannelID(v2rayConfig.APPLICATION_NAME);
         }
 
-         mBuilder =
-                new NotificationCompat.Builder(this, notificationChannelID);
-        mBuilder.setSmallIcon(v2rayConfig.APPLICATION_ICON)
+        mBuilder = new NotificationCompat.Builder(this, notificationChannelID)
+                .setSmallIcon(v2rayConfig.APPLICATION_ICON)
                 .setContentTitle(v2rayConfig.REMARK)
                 .setContentIntent(notificationContentPendingIntent)
-                .addAction(-1, "Stop", stopPendingIntent);
+                .addAction(-1, "Stop", stopPendingIntent)
+                .setPriority(NotificationCompat.PRIORITY_LOW);
+
         startForeground(1, mBuilder.build());
-        Log.e("TAG", "showNotification: ");
         startUpdatingNotification();
     }
+
 
     private String getNotificationContentText() {
         return Utilities.parseTraffic(V2rayCoreManager.getInstance().uploadSpeed, false, true) + " ↑ " +

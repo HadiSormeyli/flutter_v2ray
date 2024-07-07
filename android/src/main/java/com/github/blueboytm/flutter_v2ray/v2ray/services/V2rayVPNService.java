@@ -105,6 +105,7 @@ public class V2rayVPNService extends VpnService implements V2rayServicesListener
                 .setContentIntent(notificationContentPendingIntent)
                 .addAction(-1, "Stop", stopPendingIntent);
         startForeground(1, mBuilder.build());
+        Log.e("TAG", "showNotification: ");
         startUpdatingNotification();
     }
 
@@ -114,6 +115,7 @@ public class V2rayVPNService extends VpnService implements V2rayServicesListener
     }
 
     private void updateNotification() {
+        Log.e("TAG", "updateNotification: ");
         if(mBuilder != null) {
             mBuilder.setContentText(getNotificationContentText());
             getNotificationManager().notify(1, mBuilder.build());

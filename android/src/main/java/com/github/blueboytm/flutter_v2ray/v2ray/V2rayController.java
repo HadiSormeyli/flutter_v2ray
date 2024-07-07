@@ -32,7 +32,7 @@ public class V2rayController {
                 AppConfigs.V2RAY_STATE = (AppConfigs.V2RAY_STATES) arg1.getExtras().getSerializable("STATE");
             }
         };
-        context.registerReceiver(receiver, new IntentFilter("V2RAY_CONNECTION_INFO"), null, null);
+        context.registerReceiver(receiver, new IntentFilter("V2RAY_CONNECTION_INFO"), null, null, Context.RECEIVER_NOT_EXPORTED);
     }
 
     public static void changeConnectionMode(final AppConfigs.V2RAY_CONNECTION_MODES connection_mode) {
@@ -104,7 +104,7 @@ public class V2rayController {
             }
         };
 
-        context.registerReceiver(receiver, new IntentFilter("CONNECTED_V2RAY_SERVER_DELAY"));
+        context.registerReceiver(receiver, new IntentFilter("CONNECTED_V2RAY_SERVER_DELAY"), null, null, Context.RECEIVER_NOT_EXPORTED);
         try {
             boolean received = latch.await(3000, TimeUnit.MILLISECONDS);
             if (!received) {

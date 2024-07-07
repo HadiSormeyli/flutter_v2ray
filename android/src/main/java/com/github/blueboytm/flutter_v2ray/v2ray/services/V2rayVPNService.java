@@ -1,6 +1,7 @@
 package com.github.blueboytm.flutter_v2ray.v2ray.services;
 
 import android.app.Service;
+import android.app.ServiceInfo;
 import android.content.Intent;
 import android.net.LocalSocket;
 import android.net.LocalSocketAddress;
@@ -8,6 +9,7 @@ import android.net.VpnService;
 import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
+
 import androidx.annotation.RequiresApi;
 
 import java.io.File;
@@ -15,6 +17,7 @@ import java.io.FileDescriptor;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+
 import android.content.Context;
 
 import com.github.blueboytm.flutter_v2ray.v2ray.core.V2rayCoreManager;
@@ -27,15 +30,18 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.graphics.Color;
+
 import java.util.Objects;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import androidx.core.app.NotificationCompat;
 
 import android.os.Handler;
 import android.os.Looper;
+
 import com.github.blueboytm.flutter_v2ray.v2ray.utils.Utilities;
 
 public class V2rayVPNService extends VpnService implements V2rayServicesListener {
@@ -104,7 +110,13 @@ public class V2rayVPNService extends VpnService implements V2rayServicesListener
                 .addAction(-1, "Stop", stopPendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_LOW);
 
-        startForeground(1, mBuilder.build());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            startForeground(1, mBuilder.build(), ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC);
+        } else {
+            startForeground(1, mBuilder.build());
+        }
+
         startUpdatingNotification();
     }
 
@@ -116,7 +128,7 @@ public class V2rayVPNService extends VpnService implements V2rayServicesListener
 
     private void updateNotification() {
         Log.e("TAG", "updateNotification: ");
-        if(mBuilder != null) {
+        if (mBuilder != null) {
             mBuilder.setContentText(getNotificationContentText());
             getNotificationManager().notify(1, mBuilder.build());
         }

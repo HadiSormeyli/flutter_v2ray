@@ -19,7 +19,7 @@
         <service
             android:name="com.github.blueboytm.flutter_v2ray.v2ray.services.V2rayVPNService"
             android:exported="false"
-            android:foregroundServiceType="vpn"
+            android:foregroundServiceType="connectedDevice|dataSync"
             android:permission="android.permission.BIND_VPN_SERVICE"
             android:process=":RunSoLibV2RayDaemon">
             <intent-filter>

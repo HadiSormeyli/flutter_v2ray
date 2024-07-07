@@ -128,6 +128,11 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
                     if (Boolean.TRUE.equals(call.argument("proxy_only"))) {
                         V2rayController.changeConnectionMode(AppConfigs.V2RAY_CONNECTION_MODES.PROXY_ONLY);
                     }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 50);
+                        }
+                    }
                     V2rayController.StartV2ray(binding.getApplicationContext(), call.argument("remark"), call.argument("config"), call.argument("blocked_apps"), call.argument("bypass_subnets"));
                     result.success(null);
                     break;
@@ -241,6 +246,7 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
             }
         };
         activity.registerReceiver(v2rayBroadCastReceiver, new IntentFilter("V2RAY_CONNECTION_INFO"));
+        activity.registerReceiver(mMsgReceiver, new IntentFilter("com.v2ray.action.activity"));
     }
 
     @Override

@@ -110,8 +110,8 @@ public class V2rayVPNService extends VpnService implements V2rayServicesListener
     }
 
     private String getNotificationContentText() {
-        return Utilities.parseTraffic(V2rayCoreManager.getInstance().uploadSpeed, false, true) + "↑ " +
-                Utilities.parseTraffic(V2rayCoreManager.getInstance().downloadSpeed, false, true) + "↓";
+        return Utilities.parseTraffic(V2rayCoreManager.getInstance().uploadSpeed, false, true) + " ↑ " +
+                Utilities.parseTraffic(V2rayCoreManager.getInstance().downloadSpeed, false, true) + " ↓";
     }
 
     private void updateNotification() {

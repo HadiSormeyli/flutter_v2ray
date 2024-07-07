@@ -69,6 +69,8 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
         }
     };
     private BroadcastReceiver v2rayBroadCastReceiver;
+    private VpnAllRealPingBroadcastReceiver vpnAllRealPingReceiver;
+
 
     public void testAllRealPing(List<String> configs) {
         MessageUtil.sendMsg2TestService(activity, 3, "");
@@ -96,8 +98,8 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
                 new EventChannel.StreamHandler() {
                     @Override
                     public void onListen(Object arguments, EventChannel.EventSink eventSink) {
-                        VpnAllRealPingBroadcastReceiver receiver = new VpnAllRealPingBroadcastReceiver();
-                        receiver.setListener(new VpnAllRealPingListener() {
+                        vpnAllRealPingReceiver = new VpnAllRealPingBroadcastReceiver();
+                        vpnAllRealPingReceiver.setListener(new VpnAllRealPingListener() {
                             @Override
                             public void onVpnAllRealPingRequest(Map<String, Long> ping) {
                                 eventSink.success(new Gson().toJson(ping));
@@ -105,12 +107,16 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
                         });
 
                         IntentFilter filter = new IntentFilter("action.VPN_ALL_REAL_PING");
-                        activity.registerReceiver(receiver, filter, null, null, Context.RECEIVER_NOT_EXPORTED);
+                        activity.registerReceiver(vpnAllRealPingReceiver, filter, null, null, Context.RECEIVER_NOT_EXPORTED);
                     }
 
                     @Override
                     public void onCancel(Object arguments) {
                         // Implementation for onCancel
+                        if (vpnAllRealPingReceiver != null) {
+                            activity.unregisterReceiver(vpnAllRealPingReceiver);
+                            vpnAllRealPingReceiver = null;
+                        }
                     }
                 }
         );
@@ -197,6 +203,11 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
             vpnStatusEvent.setStreamHandler(null);
             vpnPingEvent.setStreamHandler(null);
             activity.unregisterReceiver(v2rayBroadCastReceiver);
+            activity.unregisterReceiver(mMsgReceiver);
+            if (vpnAllRealPingReceiver != null) {
+                activity.unregisterReceiver(vpnAllRealPingReceiver);
+                vpnAllRealPingReceiver = null;
+            }
             executor.shutdown();
         }
     }

@@ -105,7 +105,7 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
                         });
 
                         IntentFilter filter = new IntentFilter("action.VPN_ALL_REAL_PING");
-                        activity.registerReceiver(receiver, filter);
+                        activity.registerReceiver(receiver, filter, null, null, Context.RECEIVER_NOT_EXPORTED);
                     }
 
                     @Override
@@ -249,8 +249,8 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
                 }
             }
         };
-        activity.registerReceiver(v2rayBroadCastReceiver, new IntentFilter("V2RAY_CONNECTION_INFO"));
-        activity.registerReceiver(mMsgReceiver, new IntentFilter("com.v2ray.action.activity"));
+        activity.registerReceiver(v2rayBroadCastReceiver, new IntentFilter("V2RAY_CONNECTION_INFO"), null, null, Context.RECEIVER_NOT_EXPORTED);
+        activity.registerReceiver(mMsgReceiver, new IntentFilter("com.v2ray.action.activity"), null, null, Context.RECEIVER_NOT_EXPORTED);
     }
 
     @Override

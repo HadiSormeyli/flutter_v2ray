@@ -1,7 +1,9 @@
 package com.github.blueboytm.flutter_v2ray;
 
 import androidx.annotation.NonNull;
-
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.app.Activity;
@@ -33,6 +35,7 @@ import com.github.blueboytm.flutter_v2ray.v2ray.services.VpnAllRealPingListener;
 import com.github.blueboytm.flutter_v2ray.v2ray.utils.MessageUtil;
 import com.github.blueboytm.flutter_v2ray.v2ray.services.V2RayTestService;
 import com.google.gson.Gson;
+import android.os.Build;
 
 
 public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {

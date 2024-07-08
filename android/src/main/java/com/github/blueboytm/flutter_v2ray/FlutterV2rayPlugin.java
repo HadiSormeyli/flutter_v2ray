@@ -133,7 +133,7 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
                 v2rayBroadCastReceiver.setListener(new VpnStatusListener() {
                     @Override
                     public void onVpnStatusRequest(ArrayList<String> list) {
-                        eventSink.success(list);
+                        events.success(list);
                     }
                 });
 

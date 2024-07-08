@@ -12,25 +12,26 @@ import io.flutter.plugin.common.EventChannel;
 
 import java.util.Map;
 
-import com.github.blueboytm.flutter_v2ray.v2ray.services.VpnAllRealPingListener;
+import com.github.blueboytm.flutter_v2ray.v2ray.services.VpnStatusListener;
 
 import java.util.ArrayList;
 
 
 public class V2RayConnectionInfoReceiver extends BroadcastReceiver {
-    private EventChannel.EventSink vpnStatusSink;
+
+    private VpnStatusListener callback;
+
 
     public V2RayConnectionInfoReceiver() {
         Log.d("TAG", "onReceive: init");
     }
 
-    public void setListener(EventChannel.EventSink vpnStatusSink) {
-        this.vpnStatusSink = vpnStatusSink;
+    public void setListener(VpnStatusListener callback) {
+        this.callback = callback;
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d("TAG", "onReceive: get broad");
         if (intent != null && intent.getAction() != null && intent.getAction().equals("action.V2RAY_CONNECTION_INFO")) {
             try {
                 ArrayList<String> list = new ArrayList<>();
@@ -42,7 +43,9 @@ public class V2RayConnectionInfoReceiver extends BroadcastReceiver {
                 list.add(intent.getExtras().getString("DOWNLOAD_TRAFFIC"));
                 list.add(intent.getExtras().getSerializable("STATE").toString().substring(6));
                 Log.d("TAG", "onReceive: get broad cast");
-                vpnStatusSink.success(list);
+                if(callback != null) {
+                    callback.onVpnStatusRequest(list);
+                }
             } catch (Exception ignored) {
                 Log.d("TAG", "errorooooooooooooooooooooooooooo " + ignored);
             }

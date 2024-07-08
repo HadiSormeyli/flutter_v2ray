@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.content.Context;
 import android.app.Activity;
 import android.net.VpnService;
+import android.util.Log;
 import android.content.Intent;
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
@@ -226,6 +227,7 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
                     list.add(intent.getExtras().getString("UPLOAD_TRAFFIC"));
                     list.add(intent.getExtras().getString("DOWNLOAD_TRAFFIC"));
                     list.add(intent.getExtras().getSerializable("STATE").toString().substring(6));
+                    Log.d("TAG", "onReceive: ");
                     vpnStatusSink.success(list);
                 } catch (Exception ignored) {
                 }

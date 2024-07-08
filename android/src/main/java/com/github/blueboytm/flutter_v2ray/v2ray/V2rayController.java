@@ -27,14 +27,14 @@ public class V2rayController {
         AppConfigs.APPLICATION_ICON = app_icon;
         AppConfigs.APPLICATION_NAME = app_name;
 
-        BroadcastReceiver receiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context arg0, Intent arg1) {
-                AppConfigs.V2RAY_STATE = (AppConfigs.V2RAY_STATES) arg1.getExtras().getSerializable("STATE");
-                Log.d("TAG", "onReceive: 2");
-            }
-        };
-        context.registerReceiver(receiver, new IntentFilter("V2RAY_CONNECTION_INFO1"), null, null, Context.RECEIVER_NOT_EXPORTED);
+//        BroadcastReceiver receiver = new BroadcastReceiver() {
+//            @Override
+//            public void onReceive(Context arg0, Intent arg1) {
+//                AppConfigs.V2RAY_STATE = (AppConfigs.V2RAY_STATES) arg1.getExtras().getSerializable("STATE");
+//                Log.d("TAG", "onReceive: 2");
+//            }
+//        };
+//        context.registerReceiver(receiver, new IntentFilter("V2RAY_CONNECTION_INFO"), null, null, Context.RECEIVER_NOT_EXPORTED);
     }
 
     public static void changeConnectionMode(final AppConfigs.V2RAY_CONNECTION_MODES connection_mode) {

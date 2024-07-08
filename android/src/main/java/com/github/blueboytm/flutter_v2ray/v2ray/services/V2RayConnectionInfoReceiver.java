@@ -25,6 +25,7 @@ public class V2RayConnectionInfoReceiver extends BroadcastReceiver {
         if (intent != null && intent.getAction() != null && intent.getAction().equals("V2RAY_CONNECTION_INFO")) {
             try {
                 ArrayList<String> list = new ArrayList<>();
+                AppConfigs.V2RAY_STATE = (AppConfigs.V2RAY_STATES) arg1.getExtras().getSerializable("STATE");
                 list.add(intent.getExtras().getString("DURATION"));
                 list.add(intent.getExtras().getString("UPLOAD_SPEED"));
                 list.add(intent.getExtras().getString("DOWNLOAD_SPEED"));
@@ -34,7 +35,7 @@ public class V2RayConnectionInfoReceiver extends BroadcastReceiver {
                 Log.d("TAG", "onReceive: get broad cast");
                 vpnStatusSink.success(list);
             } catch (Exception ignored) {
-                Log.d("TAG", "error");
+                Log.d("TAG", "errorooooooooooooooooooooooooooo");
             }
         }
     }

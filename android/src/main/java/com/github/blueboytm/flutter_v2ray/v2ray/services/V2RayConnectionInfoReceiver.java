@@ -3,12 +3,17 @@ package com.github.blueboytm.flutter_v2ray.v2ray.services;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+
+import com.github.blueboytm.flutter_v2ray.v2ray.utils.AppConfigs;
+
 import android.util.Log;
+
 import io.flutter.plugin.common.EventChannel;
 
 import java.util.Map;
 
 import com.github.blueboytm.flutter_v2ray.v2ray.services.VpnAllRealPingListener;
+
 import java.util.ArrayList;
 
 
@@ -25,7 +30,7 @@ public class V2RayConnectionInfoReceiver extends BroadcastReceiver {
         if (intent != null && intent.getAction() != null && intent.getAction().equals("V2RAY_CONNECTION_INFO")) {
             try {
                 ArrayList<String> list = new ArrayList<>();
-                AppConfigs.V2RAY_STATE = (AppConfigs.V2RAY_STATES) arg1.getExtras().getSerializable("STATE");
+                AppConfigs.V2RAY_STATE = (AppConfigs.V2RAY_STATES) intent.getExtras().getSerializable("STATE");
                 list.add(intent.getExtras().getString("DURATION"));
                 list.add(intent.getExtras().getString("UPLOAD_SPEED"));
                 list.add(intent.getExtras().getString("DOWNLOAD_SPEED"));

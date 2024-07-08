@@ -28,6 +28,8 @@ import com.github.blueboytm.flutter_v2ray.v2ray.services.V2rayVPNService;
 import libv2ray.Libv2ray;
 import libv2ray.V2RayPoint;
 import libv2ray.V2RayVPNServiceSupportsSet;
+import android.util.Log;
+
 
 public final class V2rayCoreManager {
     private volatile static V2rayCoreManager INSTANCE;
@@ -83,6 +85,7 @@ public final class V2rayCoreManager {
                 connection_info_intent.putExtra("DOWNLOAD_SPEED", Utilities.parseTraffic(downloadSpeed, false, true));
                 connection_info_intent.putExtra("UPLOAD_TRAFFIC", Utilities.parseTraffic(totalUpload, false, false));
                 connection_info_intent.putExtra("DOWNLOAD_TRAFFIC", Utilities.parseTraffic(totalDownload, false, false));
+                Log.d("TAG", "onReceive: send broad cast 14");
                 context.sendBroadcast(connection_info_intent);
             }
 
@@ -226,10 +229,13 @@ public final class V2rayCoreManager {
             connection_info_intent.putExtra("DOWNLOAD_SPEED", Utilities.parseTraffic(0, false, true));
             connection_info_intent.putExtra("UPLOAD_TRAFFIC", Utilities.parseTraffic(0, false, false));
             connection_info_intent.putExtra("DOWNLOAD_TRAFFIC", Utilities.parseTraffic(0, false, false));
+            Log.d("TAG", "onReceive: send broad cast");
             try {
                 v2rayServicesListener.getService().getApplicationContext().sendBroadcast(connection_info_intent);
+                Log.d("TAG", "onReceive: send broad cast2");
             } catch (Exception e) {
                 //ignore
+                Log.d("TAG", "onReceive: " + e);
             }
         }
         if (countDownTimer != null) {

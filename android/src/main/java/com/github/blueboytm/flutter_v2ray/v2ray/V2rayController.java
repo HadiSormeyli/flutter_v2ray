@@ -11,6 +11,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import java.util.ArrayList;
+import android.util.Log;
 
 import com.github.blueboytm.flutter_v2ray.v2ray.core.V2rayCoreManager;
 import com.github.blueboytm.flutter_v2ray.v2ray.services.V2rayProxyOnlyService;
@@ -30,6 +31,7 @@ public class V2rayController {
             @Override
             public void onReceive(Context arg0, Intent arg1) {
                 AppConfigs.V2RAY_STATE = (AppConfigs.V2RAY_STATES) arg1.getExtras().getSerializable("STATE");
+                Log.d("TAG", "onReceive: 2");
             }
         };
         context.registerReceiver(receiver, new IntentFilter("V2RAY_CONNECTION_INFO"), null, null, Context.RECEIVER_NOT_EXPORTED);

@@ -216,6 +216,8 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
     @Override
     public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
         activity = binding.getActivity();
+        Log.d("TAG", "onReceive: ");
+
         v2rayBroadCastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -227,7 +229,6 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
                     list.add(intent.getExtras().getString("UPLOAD_TRAFFIC"));
                     list.add(intent.getExtras().getString("DOWNLOAD_TRAFFIC"));
                     list.add(intent.getExtras().getSerializable("STATE").toString().substring(6));
-                    Log.d("TAG", "onReceive: ");
                     vpnStatusSink.success(list);
                 } catch (Exception ignored) {
                 }

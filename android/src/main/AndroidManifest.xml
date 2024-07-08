@@ -48,5 +48,15 @@
                 <action android:name="action.VPN_ALL_REAL_PING" />
             </intent-filter>
         </receiver>
+
+
+        <receiver
+            android:name="com.github.blueboytm.flutter_v2ray.v2ray.services.V2RayConnectionInfoReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="V2RAY_CONNECTION_INFO" />
+            </intent-filter>
+        </receiver>
+
     </application>
 </manifest>

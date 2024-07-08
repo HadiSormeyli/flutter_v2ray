@@ -122,8 +122,7 @@ public class V2rayVPNService extends VpnService implements V2rayServicesListener
     }
 
     private void updateNotification() {
-        Log.e("TAG", "updateNotification: ");
-        if (mBuilder != null) {
+        if (mBuilder != null && V2rayCoreManager.getInstance().isV2rayCoreRunning()) {
             mBuilder.setContentText(getNotificationContentText());
             getNotificationManager().notify(1, mBuilder.build());
         }

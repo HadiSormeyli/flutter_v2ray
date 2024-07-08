@@ -34,7 +34,7 @@ public class V2rayController {
                 Log.d("TAG", "onReceive: 2");
             }
         };
-        context.registerReceiver(receiver, new IntentFilter("V2RAY_CONNECTION_INFO"), null, null, Context.RECEIVER_NOT_EXPORTED);
+        context.registerReceiver(receiver, new IntentFilter("V2RAY_CONNECTION_INFO1"), null, null, Context.RECEIVER_NOT_EXPORTED);
     }
 
     public static void changeConnectionMode(final AppConfigs.V2RAY_CONNECTION_MODES connection_mode) {

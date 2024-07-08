@@ -3,6 +3,7 @@ package com.github.blueboytm.flutter_v2ray;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
@@ -33,10 +34,12 @@ import com.github.blueboytm.flutter_v2ray.v2ray.V2rayController;
 import com.github.blueboytm.flutter_v2ray.v2ray.utils.AppConfigs;
 import com.github.blueboytm.flutter_v2ray.v2ray.services.VpnAllRealPingBroadcastReceiver;
 import com.github.blueboytm.flutter_v2ray.v2ray.services.VpnAllRealPingListener;
+import com.github.blueboytm.flutter_v2ray.v2ray.services.V2RayConnectionInfoReceiver;
 
 import com.github.blueboytm.flutter_v2ray.v2ray.utils.MessageUtil;
 import com.github.blueboytm.flutter_v2ray.v2ray.services.V2RayTestService;
 import com.google.gson.Gson;
+
 import android.os.Build;
 
 
@@ -69,7 +72,7 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
             }
         }
     };
-    private BroadcastReceiver v2rayBroadCastReceiver;
+    private V2RayConnectionInfoReceiver v2rayBroadCastReceiver;
     private VpnAllRealPingBroadcastReceiver vpnAllRealPingReceiver;
 
 
@@ -218,26 +221,11 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
         activity = binding.getActivity();
         Log.d("TAG", "onReceive: ");
 
-        v2rayBroadCastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                try {
-                    ArrayList<String> list = new ArrayList<>();
-                    list.add(intent.getExtras().getString("DURATION"));
-                    list.add(intent.getExtras().getString("UPLOAD_SPEED"));
-                    list.add(intent.getExtras().getString("DOWNLOAD_SPEED"));
-                    list.add(intent.getExtras().getString("UPLOAD_TRAFFIC"));
-                    list.add(intent.getExtras().getString("DOWNLOAD_TRAFFIC"));
-                    list.add(intent.getExtras().getSerializable("STATE").toString().substring(6));
-                    Log.d("TAG", "onReceive: get broad cast");
-                    vpnStatusSink.success(list);
-                } catch (Exception ignored) {
-                }
-            }
-        };
-        IntentFilter filter  = new IntentFilter("V2RAY_CONNECTION_INFO");
+        v2rayBroadCastReceiver = new V2RayConnectionInfoReceiver();
+        v2rayBroadCastReceiver.setListener(vpnStatusSink);
+        IntentFilter filter = new IntentFilter("V2RAY_CONNECTION_INFO");
         activity.registerReceiver(v2rayBroadCastReceiver, filter, null, null, Context.RECEIVER_NOT_EXPORTED);
-        activity.registerReceiver(mMsgReceiver, new IntentFilter("com.v2ray.action.activity"));
+        activity.registerReceiver(mMsgReceiver, new IntentFilter("com.v2ray.action.activity"), null, null, Context.RECEIVER_NOT_EXPORTED);
 
     }
 
@@ -249,24 +237,10 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
     @Override
     public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding binding) {
         activity = binding.getActivity();
-        v2rayBroadCastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                try {
-                    ArrayList<String> list = new ArrayList<>();
-                    list.add(intent.getExtras().getString("DURATION"));
-                    list.add(intent.getExtras().getString("UPLOAD_SPEED"));
-                    list.add(intent.getExtras().getString("DOWNLOAD_SPEED"));
-                    list.add(intent.getExtras().getString("UPLOAD_TRAFFIC"));
-                    list.add(intent.getExtras().getString("DOWNLOAD_TRAFFIC"));
-                    list.add(intent.getExtras().getSerializable("STATE").toString().substring(6));
-                    vpnStatusSink.success(list);
-                } catch (Exception ignored) {
-                }
-            }
-        };
+        v2rayBroadCastReceiver = new V2RayConnectionInfoReceiver();
+        v2rayBroadCastReceiver.setListener(vpnStatusSink);
         activity.registerReceiver(v2rayBroadCastReceiver, new IntentFilter("V2RAY_CONNECTION_INFO"), null, null, Context.RECEIVER_NOT_EXPORTED);
-        activity.registerReceiver(mMsgReceiver, new IntentFilter("com.v2ray.action.activity"));
+        activity.registerReceiver(mMsgReceiver, new IntentFilter("com.v2ray.action.activity"), null, null, Context.RECEIVER_NOT_EXPORTED);
     }
 
     @Override

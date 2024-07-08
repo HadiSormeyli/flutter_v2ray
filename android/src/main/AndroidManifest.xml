@@ -52,9 +52,9 @@
 
         <receiver
             android:name="com.github.blueboytm.flutter_v2ray.v2ray.services.V2RayConnectionInfoReceiver"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
-                <action android:name="V2RAY_CONNECTION_INFO" />
+                <action android:name="action.V2RAY_CONNECTION_INFO" />
             </intent-filter>
         </receiver>
 

@@ -223,7 +223,7 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
         v2rayBroadCastReceiver = new V2RayConnectionInfoReceiver();
         v2rayBroadCastReceiver.setListener(vpnStatusSink);
         IntentFilter filter = new IntentFilter("V2RAY_CONNECTION_INFO");
-        activity.registerReceiver(v2rayBroadCastReceiver, filter, null, null, Context.RECEIVER_NOT_EXPORTED);
+        activity.registerReceiver(v2rayBroadCastReceiver, filter, null, null, Context.RECEIVER_EXPORTED);
         activity.registerReceiver(mMsgReceiver, new IntentFilter("com.v2ray.action.activity"), null, null, Context.RECEIVER_NOT_EXPORTED);
 
     }
@@ -238,7 +238,7 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
         activity = binding.getActivity();
         v2rayBroadCastReceiver = new V2RayConnectionInfoReceiver();
         v2rayBroadCastReceiver.setListener(vpnStatusSink);
-        activity.registerReceiver(v2rayBroadCastReceiver, new IntentFilter("V2RAY_CONNECTION_INFO"), null, null, Context.RECEIVER_NOT_EXPORTED);
+        activity.registerReceiver(v2rayBroadCastReceiver, new IntentFilter("V2RAY_CONNECTION_INFO"), null, null, Context.RECEIVER_EXPORTED);
         activity.registerReceiver(mMsgReceiver, new IntentFilter("com.v2ray.action.activity"), null, null, Context.RECEIVER_NOT_EXPORTED);
     }
 

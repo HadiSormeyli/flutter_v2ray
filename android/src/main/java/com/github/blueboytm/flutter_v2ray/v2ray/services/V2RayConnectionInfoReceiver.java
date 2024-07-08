@@ -20,6 +20,10 @@ import java.util.ArrayList;
 public class V2RayConnectionInfoReceiver extends BroadcastReceiver {
     private EventChannel.EventSink vpnStatusSink;
 
+    public V2RayConnectionInfoReceiver() {
+        Log.d("TAG", "onReceive: init");
+    }
+
     public void setListener(EventChannel.EventSink vpnStatusSink) {
         this.vpnStatusSink = vpnStatusSink;
     }

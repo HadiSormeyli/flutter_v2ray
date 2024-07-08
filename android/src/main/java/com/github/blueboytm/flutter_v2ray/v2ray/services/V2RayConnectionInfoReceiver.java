@@ -44,7 +44,7 @@ public class V2RayConnectionInfoReceiver extends BroadcastReceiver {
                 Log.d("TAG", "onReceive: get broad cast");
                 vpnStatusSink.success(list);
             } catch (Exception ignored) {
-                Log.d("TAG", "errorooooooooooooooooooooooooooo");
+                Log.d("TAG", "errorooooooooooooooooooooooooooo " + ignored);
             }
         }
     }

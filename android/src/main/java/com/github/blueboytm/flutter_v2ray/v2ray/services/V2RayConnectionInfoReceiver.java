@@ -31,7 +31,7 @@ public class V2RayConnectionInfoReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d("TAG", "onReceive: get broad");
-        if (intent != null && intent.getAction() != null && intent.getAction().equals("V2RAY_CONNECTION_INFO")) {
+        if (intent != null && intent.getAction() != null && intent.getAction().equals("action.V2RAY_CONNECTION_INFO")) {
             try {
                 ArrayList<String> list = new ArrayList<>();
                 AppConfigs.V2RAY_STATE = (AppConfigs.V2RAY_STATES) intent.getExtras().getSerializable("STATE");

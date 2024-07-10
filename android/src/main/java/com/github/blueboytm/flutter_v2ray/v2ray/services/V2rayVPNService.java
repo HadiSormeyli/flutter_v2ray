@@ -125,6 +125,8 @@ public class V2rayVPNService extends VpnService implements V2rayServicesListener
         if (mBuilder != null && V2rayCoreManager.getInstance().isV2rayCoreRunning()) {
             mBuilder.setContentText(getNotificationContentText());
             getNotificationManager().notify(1, mBuilder.build());
+        } else {
+            stopForeground(true);
         }
     }
 
@@ -182,8 +184,8 @@ public class V2rayVPNService extends VpnService implements V2rayServicesListener
     }
 
     private void stopAllProcess() {
-        stopUpdatingNotification();
         stopForeground(true);
+        stopUpdatingNotification();
         isRunning = false;
         if (process != null) {
             process.destroy();

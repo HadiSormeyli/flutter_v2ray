@@ -141,6 +141,10 @@ public class V2rayVPNService extends VpnService implements V2rayServicesListener
         handler.post(updateNotificationRunnable);
     }
 
+    private void stopUpdatingNotification() {
+        handler.removeCallbacks(updateNotificationRunnable);
+    }
+
 
     @Override
     public void onCreate() {
@@ -181,6 +185,7 @@ public class V2rayVPNService extends VpnService implements V2rayServicesListener
 
     private void stopAllProcess() {
         stopForeground(true);
+//        stopUpdatingNotification();
         isRunning = false;
         if (process != null) {
             process.destroy();

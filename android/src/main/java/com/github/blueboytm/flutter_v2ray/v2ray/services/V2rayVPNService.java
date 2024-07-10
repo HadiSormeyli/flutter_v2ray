@@ -126,7 +126,7 @@ public class V2rayVPNService extends VpnService implements V2rayServicesListener
             mBuilder.setContentText(getNotificationContentText());
             getNotificationManager().notify(1, mBuilder.build());
         } else {
-            stopForeground(true);
+            stopAllProcess();
         }
     }
 
@@ -139,10 +139,6 @@ public class V2rayVPNService extends VpnService implements V2rayServicesListener
             }
         };
         handler.post(updateNotificationRunnable);
-    }
-
-    private void stopUpdatingNotification() {
-        handler.removeCallbacks(updateNotificationRunnable);
     }
 
 

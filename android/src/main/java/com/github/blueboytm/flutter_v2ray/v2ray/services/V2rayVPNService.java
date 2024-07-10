@@ -181,7 +181,6 @@ public class V2rayVPNService extends VpnService implements V2rayServicesListener
 
     private void stopAllProcess() {
         stopForeground(true);
-        stopUpdatingNotification();
         isRunning = false;
         if (process != null) {
             process.destroy();

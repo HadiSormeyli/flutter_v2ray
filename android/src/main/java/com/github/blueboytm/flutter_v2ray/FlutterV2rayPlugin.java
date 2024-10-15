@@ -82,29 +82,6 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
     private V2RayConnectionInfoReceiver v2rayBroadCastReceiver;
     private VpnAllRealPingBroadcastReceiver vpnAllRealPingReceiver;
 
-
-    public void testAllRealPing(List<String> configs) {
-        realPings = new HashMap();
-        MessageUtil.sendMsg2TestService(activity, 3, "");
-
-        for (String config : configs) {
-            MessageUtil.sendMsg2TestService(
-                    activity,
-                    1,
-                    config
-            );
-        }
-
-        while (true) {
-            if (realPings.size() < configs.size()) {
-
-            } else {
-                break;
-            }
-        }
-
-    }
-
     @SuppressLint("DiscouragedApi")
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {

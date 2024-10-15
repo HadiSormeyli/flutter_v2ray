@@ -3,7 +3,8 @@ package com.github.blueboytm.flutter_v2ray;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ConcurrentHashMap;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;

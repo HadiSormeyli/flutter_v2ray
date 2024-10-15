@@ -211,7 +211,7 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
                                 myMap.put(config, result);
                                 android.util.Log.d("Plugin", "test ping: " + myMap);
                                 if (result != null) {
-                                    realPings.putAll(result);
+                                    realPings.putAll(myMap);
                                 }
                             }
                         }).start();

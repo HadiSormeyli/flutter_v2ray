@@ -95,7 +95,7 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
         }
 
         while (true) {
-            if(realPings.size() < configs.size()) {
+            if (realPings.size() < configs.size()) {
 
             } else {
                 break;
@@ -165,7 +165,6 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
         });
 
 
-
         vpnControlMethod.setMethodCallHandler((call, result) -> {
             switch (call.method) {
                 case "startV2Ray":
@@ -207,7 +206,7 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
                             @Override
                             public void run() {
                                 Long result = V2rayController.getV2rayServerDelay(config);
-                                Map<String, Long> myMap = new HashMap<String,Long>();
+                                Map<String, Long> myMap = new HashMap<String, Long>();
                                 myMap.put(config, result);
                                 android.util.Log.d("Plugin", "test ping: " + myMap);
                                 if (result != null) {
@@ -227,6 +226,7 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
                                     activity.runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
+                                            android.util.Log.d("Plugin", "pings: " + realPings);
                                             result.success(new Gson().toJson(realPings));
                                         }
                                     });

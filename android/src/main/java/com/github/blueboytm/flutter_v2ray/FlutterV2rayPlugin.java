@@ -279,7 +279,7 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
     public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
         activity = binding.getActivity();
 
-        activity.registerReceiver(mMsgReceiver, new IntentFilter("com.v2ray.action.activity"), null, null, Context.RECEIVER_NOT_EXPORTED);
+        activity.registerReceiver(mMsgReceiver, new IntentFilter("com.v2ray.action.activity"));
     }
 
     @Override
@@ -290,7 +290,7 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
     @Override
     public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding binding) {
         activity = binding.getActivity();
-        activity.registerReceiver(mMsgReceiver, new IntentFilter("com.v2ray.action.activity"), null, null, Context.RECEIVER_NOT_EXPORTED);
+        activity.registerReceiver(mMsgReceiver, new IntentFilter("com.v2ray.action.activity"));
     }
 
     @Override

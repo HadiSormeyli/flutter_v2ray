@@ -215,7 +215,7 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
                         public void run() {
                             while (true) {
                                 if (realPings.size() < configs.size()) {
-                                    android.util.Log.d("Plugin", "pings: " + realPings);
+//                                    android.util.Log.d("Plugin", "pings: " + realPings);
                                 } else {
                                     activity.runOnUiThread(new Runnable() {
                                         @Override

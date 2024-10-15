@@ -16,11 +16,10 @@ export 'model/v2ray_status.dart';
 export 'url/url.dart';
 
 class FlutterV2ray {
-  FlutterV2ray({required this.onStatusChanged, required this.onPingRecived});
+  FlutterV2ray({required this.onStatusChanged});
 
   /// This method is called when V2Ray status has changed.
   final void Function(V2RayStatus status) onStatusChanged;
-  final void Function(Map<String, int> ping) onPingRecived;
 
   /// Request VPN service permission specifically for Android.
   Future<bool> requestPermission() async {
@@ -34,7 +33,6 @@ class FlutterV2ray {
   Future<void> initializeV2Ray() async {
     await FlutterV2rayPlatform.instance.initializeV2Ray(
       onStatusChanged: onStatusChanged,
-      onPingRecived: onPingRecived
     );
   }
 

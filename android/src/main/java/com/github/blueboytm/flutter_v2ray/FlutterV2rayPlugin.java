@@ -52,7 +52,7 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
     private EventChannel vpnPingEvent;
     private EventChannel.EventSink vpnStatusSink;
     private Activity activity;
-    private HashMap<String, Long> realPings;
+    private ConcurrentHashMap<String, Long> realPings;
     private final BroadcastReceiver mMsgReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context ctx, Intent intent) {
@@ -200,17 +200,30 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
                 case "getAllServerDelay":
                     String res = call.argument("configs");
                     List<String> configs = new Gson().fromJson(res, List.class);
-                    realPings = new HashMap();
+
+// Use ConcurrentHashMap for thread safety
+                    realPings = new ConcurrentHashMap<>();
+
+// Create a CountDownLatch to wait for all threads
+                    CountDownLatch latch = new CountDownLatch(configs.size());
+
                     for (String config : configs) {
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                Long result = V2rayController.getV2rayServerDelay(config);
-                                Map<String, Long> myMap = new HashMap<String, Long>();
-                                myMap.put(config, result);
-                                android.util.Log.d("Plugin", "test ping: " + myMap);
-                                if (result != null) {
-                                    realPings.putAll(myMap);
+                                try {
+                                    // Simulate the ping operation
+                                    Long result = V2rayController.getV2rayServerDelay(config);
+                                    Map<String, Long> myMap = new HashMap<>();
+                                    myMap.put(config, result);
+                                    android.util.Log.d("Plugin", "test ping: " + myMap);
+
+                                    if (result != null) {
+                                        realPings.put(config, result);
+                                    }
+                                } finally {
+                                    // Decrement the latch count when the thread finishes
+                                    latch.countDown();
                                 }
                             }
                         }).start();
@@ -219,19 +232,20 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            while (true) {
-                                if (realPings.size() < configs.size()) {
-                                    android.util.Log.d("Plugin", "pings: " + realPings);
-                                } else {
-                                    activity.runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            android.util.Log.d("Plugin", "pings: " + realPings);
-                                            result.success(new Gson().toJson(realPings));
-                                        }
-                                    });
-                                    break;
-                                }
+                            try {
+                                // Wait for all threads to finish
+                                latch.await();
+
+                                // Run on UI thread to return the result
+                                activity.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        android.util.Log.d("Plugin", "Final pings: " + realPings);
+                                        result.success(new Gson().toJson(realPings));
+                                    }
+                                });
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
                             }
                         }
                     }).start();

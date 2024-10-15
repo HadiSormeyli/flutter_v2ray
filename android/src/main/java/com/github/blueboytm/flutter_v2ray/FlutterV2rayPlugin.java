@@ -60,7 +60,7 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
                 switch (intent.getIntExtra("key", 0)) {
                     case 2:
                         Map<String, Long> result = (HashMap<String, Long>) intent.getSerializableExtra("content");
-
+                        android.util.Log.d("Plugin", "new ping: " + result);
 //                        Intent intent2 = new Intent();
 //                        intent2.setAction("action.VPN_ALL_REAL_PING");
 //                        intent2.putExtra("VPN_ALL_REAL_PING", (Serializable) result);
@@ -210,14 +210,25 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
                         );
                     }
 
-                    while (true) {
-                        if(realPings.size() < configs.size()) {
-                            android.util.Log.d("Plugin", "pings: " + realPings);
-                        } else {
-                            break;
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            while (true) {
+                                if (realPings.size() < configs.size()) {
+                                    android.util.Log.d("Plugin", "pings: " + realPings);
+                                } else {
+                                    activity.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            result.success(new Gson().toJson(realPings));
+                                        }
+                                    });
+                                    break;
+                                }
+                            }
                         }
-                    }
-                    result.success(new Gson().toJson(realPings));
+                    }).start();
+
                     break;
                 case "getConnectedServerDelay":
                     executor.submit(() -> {

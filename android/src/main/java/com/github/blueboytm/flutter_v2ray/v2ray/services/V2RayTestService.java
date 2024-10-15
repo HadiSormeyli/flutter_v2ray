@@ -39,6 +39,7 @@ public class V2RayTestService extends Service {
                             Long result = V2rayController.getV2rayServerDelay(config);
                             Map<String, Long> myMap = new HashMap<String,Long>();
                             myMap.put(config, result);
+                            android.util.Log.d("Plugin", "test ping: " + myMap);
                             MessageUtil.sendMsg2UI(V2RayTestService.this, 2,  (Serializable) myMap);
                         }
                     }).start();

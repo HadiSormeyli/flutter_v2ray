@@ -212,12 +212,12 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
 
                     while (true) {
                         if(realPings.size() < configs.size()) {
-
+                            android.util.Log.d("Plugin", "pings: " + realPings);
                         } else {
                             break;
                         }
                     }
-                    result.success(new Gson().toJson(realPings))
+                    result.success(new Gson().toJson(realPings));
                     break;
                 case "getConnectedServerDelay":
                     executor.submit(() -> {

@@ -202,14 +202,19 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
                     String res = call.argument("configs");
                     List<String> configs = new Gson().fromJson(res, List.class);
                     realPings = new HashMap();
-                    MessageUtil.sendMsg2TestService(activity, 3, "");
-
                     for (String config : configs) {
-                        MessageUtil.sendMsg2TestService(
-                                activity,
-                                1,
-                                config
-                        );
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Long result = V2rayController.getV2rayServerDelay(config);
+                                Map<String, Long> myMap = new HashMap<String,Long>();
+                                myMap.put(config, result);
+                                android.util.Log.d("Plugin", "test ping: " + myMap);
+                                if (result != null) {
+                                    realPings.putAll(result);
+                                }
+                            }
+                        }).start();
                     }
 
                     new Thread(new Runnable() {

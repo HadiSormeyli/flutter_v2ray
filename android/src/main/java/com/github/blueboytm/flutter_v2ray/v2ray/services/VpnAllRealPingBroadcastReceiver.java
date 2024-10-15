@@ -20,7 +20,10 @@ public class VpnAllRealPingBroadcastReceiver extends BroadcastReceiver {
         if (intent != null && intent.getAction() != null && intent.getAction().equals("action.VPN_ALL_REAL_PING")) {
             Map<String, Long> info = (Map<String, Long>) intent.getSerializableExtra("VPN_ALL_REAL_PING");
             android.util.Log.d("MainViewModel", "onReceive: best4 " + info);
-            callback.onVpnAllRealPingRequest(info);
+
+            if(callback != null) {
+                callback.onVpnAllRealPingRequest(info);
+            }
         }
     }
 }

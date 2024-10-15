@@ -52,6 +52,7 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
     private EventChannel vpnPingEvent;
     private EventChannel.EventSink vpnStatusSink;
     private Activity activity;
+    private HashMap<String, Long> realPings;
     private final BroadcastReceiver mMsgReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context ctx, Intent intent) {
@@ -60,10 +61,13 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
                     case 2:
                         Map<String, Long> result = (HashMap<String, Long>) intent.getSerializableExtra("content");
 
-                        Intent intent2 = new Intent();
-                        intent2.setAction("action.VPN_ALL_REAL_PING");
-                        intent2.putExtra("VPN_ALL_REAL_PING", (Serializable) result);
-                        activity.sendBroadcast(intent2);
+//                        Intent intent2 = new Intent();
+//                        intent2.setAction("action.VPN_ALL_REAL_PING");
+//                        intent2.putExtra("VPN_ALL_REAL_PING", (Serializable) result);
+//                        activity.sendBroadcast(intent2);
+                        if (result != null) {
+                            realPings.putAll(result);
+                        }
                         break;
 
                     default:
@@ -77,6 +81,7 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
 
 
     public void testAllRealPing(List<String> configs) {
+        realPings = new HashMap();
         MessageUtil.sendMsg2TestService(activity, 3, "");
 
         for (String config : configs) {
@@ -86,6 +91,15 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
                     config
             );
         }
+
+        while (true) {
+            if(realPings.size() < configs.size()) {
+
+            } else {
+                break;
+            }
+        }
+
     }
 
     @SuppressLint("DiscouragedApi")
@@ -98,32 +112,32 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
                 "flutter_v2ray/all_real_ping"
         );
 
-        vpnPingEvent.setStreamHandler(
-                new EventChannel.StreamHandler() {
-                    @Override
-                    public void onListen(Object arguments, EventChannel.EventSink eventSink) {
-                        vpnAllRealPingReceiver = new VpnAllRealPingBroadcastReceiver();
-                        vpnAllRealPingReceiver.setListener(new VpnAllRealPingListener() {
-                            @Override
-                            public void onVpnAllRealPingRequest(Map<String, Long> ping) {
-                                eventSink.success(new Gson().toJson(ping));
-                            }
-                        });
-
-                        IntentFilter filter = new IntentFilter("action.VPN_ALL_REAL_PING");
-                        activity.registerReceiver(vpnAllRealPingReceiver, filter, null, null, Context.RECEIVER_NOT_EXPORTED);
-                    }
-
-                    @Override
-                    public void onCancel(Object arguments) {
-                        // Implementation for onCancel
-                        if (vpnAllRealPingReceiver != null) {
-                            activity.unregisterReceiver(vpnAllRealPingReceiver);
-                            vpnAllRealPingReceiver = null;
-                        }
-                    }
-                }
-        );
+//        vpnPingEvent.setStreamHandler(
+//                new EventChannel.StreamHandler() {
+//                    @Override
+//                    public void onListen(Object arguments, EventChannel.EventSink eventSink) {
+//                        vpnAllRealPingReceiver = new VpnAllRealPingBroadcastReceiver();
+//                        vpnAllRealPingReceiver.setListener(new VpnAllRealPingListener() {
+//                            @Override
+//                            public void onVpnAllRealPingRequest(Map<String, Long> ping) {
+//                                eventSink.success(new Gson().toJson(ping));
+//                            }
+//                        });
+//
+//                        IntentFilter filter = new IntentFilter("action.VPN_ALL_REAL_PING");
+//                        activity.registerReceiver(vpnAllRealPingReceiver, filter, null, null, Context.RECEIVER_NOT_EXPORTED);
+//                    }
+//
+//                    @Override
+//                    public void onCancel(Object arguments) {
+//                        // Implementation for onCancel
+//                        if (vpnAllRealPingReceiver != null) {
+//                            activity.unregisterReceiver(vpnAllRealPingReceiver);
+//                            vpnAllRealPingReceiver = null;
+//                        }
+//                    }
+//                }
+//        );
 
         vpnStatusEvent.setStreamHandler(new EventChannel.StreamHandler() {
             @Override
@@ -185,7 +199,25 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
                 case "getAllServerDelay":
                     String res = call.argument("configs");
                     List<String> configs = new Gson().fromJson(res, List.class);
-                    testAllRealPing(configs);
+                    realPings = new HashMap();
+                    MessageUtil.sendMsg2TestService(activity, 3, "");
+
+                    for (String config : configs) {
+                        MessageUtil.sendMsg2TestService(
+                                activity,
+                                1,
+                                config
+                        );
+                    }
+
+                    while (true) {
+                        if(realPings.size() < configs.size()) {
+
+                        } else {
+                            break;
+                        }
+                    }
+                    result.success(new Gson().toJson(realPings))
                     break;
                 case "getConnectedServerDelay":
                     executor.submit(() -> {

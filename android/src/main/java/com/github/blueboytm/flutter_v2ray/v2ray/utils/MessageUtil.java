@@ -32,6 +32,8 @@ public class MessageUtil {
             intent.setAction(action);
 //            intent.setPackage("com.github.blueboytm.flutter_v2ray");
             intent.putExtra("key", what);
+            android.util.Log.d("Plugin", "sendMsg: " + what);
+
 
             Bundle bundle = new Bundle();
             bundle.putSerializable("content", content);

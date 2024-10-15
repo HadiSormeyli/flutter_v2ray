@@ -56,7 +56,9 @@ public class FlutterV2rayPlugin implements FlutterPlugin, ActivityAware {
     private final BroadcastReceiver mMsgReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context ctx, Intent intent) {
+            android.util.Log.d("Plugin", ": onReceive");
             if (intent != null) {
+                android.util.Log.d("Plugin", ": onReceive" + intent.getIntExtra("key", 0));
                 switch (intent.getIntExtra("key", 0)) {
                     case 2:
                         Map<String, Long> result = (HashMap<String, Long>) intent.getSerializableExtra("content");
